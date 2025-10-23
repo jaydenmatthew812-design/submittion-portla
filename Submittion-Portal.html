@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SNIRAL News Submission Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .word-count {
+            transition: color 0.2s ease;
+        }
+        .word-count.warning {
+            color: #f59e0b;
+        }
+        .word-count.error {
+            color: #ef4444;
+        }
+        .word-count.success {
+            color: #10b981;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-full">
+    <div class="min-h-full">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">SNIRAL News Submission Portal</h1>
+                        <p class="text-gray-600 mt-1">Submit your news content for review and publication</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <button onclick="showStorageAccess()" class="bg-orange-100 text-orange-700 px-4 py-2 rounded-lg hover:bg-orange-200 transition-colors">
+                            🔒 Storage Access
+                        </button>
+                        <button onclick="showSubmissions()" class="bg-indigo-100 text-indigo-700 px-4 py-2 rounded-lg hover:bg-indigo-200 transition-colors">
+                            View Submissions (<span id="submissionCount">0</span>)
+                        </button>
+                        <button onclick="showSubmissionForm('article')" class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                            📰 New Article
+                        </button>
+                        <button onclick="showSubmissionForm('photo')" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                            📸 New Photo
+                        </button>
+                        <button onclick="showSubmissionForm('video')" class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                            🎥 New Video
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Submission Form -->
+            <div id="submissionForm" class="bg-white rounded-xl shadow-lg p-8 mb-8">
+                <h2 id="formTitle" class="text-2xl font-semibold text-gray-900 mb-6">Submit New Article</h2>
+                
+                <form id="articleForm" class="space-y-6">
+                    <div>
+                        <label for="authorName" class="block text-sm font-medium text-gray-700 mb-2">Author Name</label>
+                        <input type="text" id="authorName" name="authorName" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
+                    </div>
+
+                    <div>
+                        <label for="articleTitle" class="block text-sm font-medium text-gray-700 mb-2">Article Title</label>
+                        <input type="text" id="articleTitle" name="articleTitle" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
+                    </div>
+
+                    <div>
+                        <label for="category" class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                        <select id="category" name="category" required 
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
+                            <option value="">Select a category</option>
+                            <optgroup label="🌍 GENERAL & NATIONAL NEWS">
+                                <option value="government-politics">Government & Politics</option>
+                                <option value="law-crime-justice">Law, Crime & Justice</option>
+                                <option value="public-affairs">Public Affairs</option>
+                                <option value="military-defense">Military & Defense</option>
+                                <option value="public-safety">Public Safety</option>
+                                <option value="human-interest">Human Interest</option>
+                            </optgroup>
+                            <optgroup label="⚖️ POLITICS & GOVERNMENT">
+                                <option value="elections">Elections</option>
+                                <option value="presidential-office">Presidential Office / Malacañang</option>
+                                <option value="vice-presidential">Vice Presidential Office</option>
+                                <option value="senate-house">Senate / House of Representatives</option>
+                                <option value="political-parties">Political Parties</option>
+                                <option value="diplomacy-foreign">Diplomacy & Foreign Relations</option>
+                                <option value="policy-legislation">Policy & Legislation</option>
+                                <option value="corruption-scandals">Corruption & Scandals</option>
+                                <option value="political-conflicts">Political Conflicts</option>
+                                <option value="public-opinion">Public Opinion / Surveys</option>
+                            </optgroup>
+                            <optgroup label="💰 BUSINESS & ECONOMY">
+                                <option value="economy-finance">Economy & Finance</option>
+                                <option value="banking-investments">Banking & Investments</option>
+                                <option value="stock-market">Stock Market / Trading</option>
+                                <option value="agriculture-trade">Agriculture & Trade</option>
+                                <option value="labor-employment">Labor & Employment</option>
+                                <option value="real-estate">Real Estate</option>
+                                <option value="business-profiles">Business Profiles / Companies</option>
+                                <option value="entrepreneurship">Entrepreneurship & Startups</option>
+                                <option value="consumer-retail">Consumer & Retail</option>
+                                <option value="industry-manufacturing">Industry & Manufacturing</option>
+                            </optgroup>
+                            <optgroup label="🧬 SCIENCE & TECHNOLOGY">
+                                <option value="science-research">Science & Research</option>
+                                <option value="space-astronomy">Space & Astronomy</option>
+                                <option value="health-science">Health Science / Biology / Medicine</option>
+                                <option value="environment-climate">Environment & Climate</option>
+                                <option value="energy-innovation">Energy & Innovation</option>
+                                <option value="artificial-intelligence">Artificial Intelligence</option>
+                                <option value="gadgets-devices">Gadgets & Devices</option>
+                                <option value="robotics">Robotics</option>
+                                <option value="software-apps">Software & Apps</option>
+                                <option value="internet-social">Internet & Social Media</option>
+                                <option value="data-cybersecurity">Data & Cybersecurity</option>
+                            </optgroup>
+                            <optgroup label="🧭 EDUCATION & CULTURE">
+                                <option value="schools-universities">Schools & Universities</option>
+                                <option value="curriculum-learning">Curriculum & Learning</option>
+                                <option value="scholarships-exams">Scholarships & Exams</option>
+                                <option value="academic-achievements">Academic Achievements</option>
+                                <option value="history-heritage">History & Heritage</option>
+                                <option value="culture-traditions">Culture & Traditions</option>
+                                <option value="museums-arts">Museums & Arts</option>
+                                <option value="language-literature">Language & Literature</option>
+                                <option value="research-discoveries">Research & Discoveries</option>
+                            </optgroup>
+                            <optgroup label="🌦️ ENVIRONMENT & WEATHER">
+                                <option value="environment-conservation">Environment & Conservation</option>
+                                <option value="climate-change">Climate Change</option>
+                                <option value="pollution-waste">Pollution & Waste Management</option>
+                                <option value="natural-resources">Natural Resources</option>
+                                <option value="renewable-energy">Renewable Energy</option>
+                                <option value="weather-reports">Weather Reports</option>
+                                <option value="forecasts-climate">Forecasts & Climate Patterns</option>
+                            </optgroup>
+                            <optgroup label="🌋 DISASTERS & ACCIDENTS">
+                                <option value="natural-disasters">Natural Disasters</option>
+                                <option value="earthquakes">Earthquakes</option>
+                                <option value="typhoons">Typhoons / Hurricanes</option>
+                                <option value="floods">Floods</option>
+                                <option value="landslides">Landslides</option>
+                                <option value="volcanic-eruptions">Volcanic Eruptions</option>
+                                <option value="wildfires">Wildfires / Forest Fires</option>
+                                <option value="droughts">Droughts</option>
+                                <option value="tsunamis">Tsunamis</option>
+                                <option value="accidents">Accidents</option>
+                                <option value="road-accidents">Road Accidents</option>
+                                <option value="aviation-accidents">Airplane / Aviation Accidents</option>
+                                <option value="train-accidents">Train Accidents</option>
+                                <option value="maritime-accidents">Ship / Maritime Accidents</option>
+                                <option value="industrial-accidents">Industrial / Workplace Accidents</option>
+                                <option value="fire-incidents">Fire Incidents</option>
+                                <option value="building-collapses">Building Collapses</option>
+                            </optgroup>
+                            <optgroup label="🧑‍⚕️ HEALTH & WELLNESS">
+                                <option value="public-health">Public Health</option>
+                                <option value="medical-research">Medical Research</option>
+                                <option value="hospitals-healthcare">Hospitals & Healthcare</option>
+                                <option value="nutrition-diet">Nutrition & Diet</option>
+                                <option value="mental-health">Mental Health</option>
+                                <option value="diseases-epidemics">Diseases & Epidemics</option>
+                                <option value="covid-outbreaks">COVID-19 / Outbreaks</option>
+                                <option value="vaccines-medicines">Vaccines & Medicines</option>
+                                <option value="fitness-lifestyle">Fitness & Lifestyle Health</option>
+                            </optgroup>
+                            <optgroup label="🎭 ENTERTAINMENT & ARTS">
+                                <option value="showbiz">Showbiz News</option>
+                                <option value="celebrities">Celebrities & Influencers</option>
+                                <option value="tv-movies">TV & Movies</option>
+                                <option value="music-concerts">Music & Concerts</option>
+                                <option value="theater-performing">Theater & Performing Arts</option>
+                                <option value="art-exhibits">Art Exhibits</option>
+                                <option value="fashion-style">Fashion & Style</option>
+                                <option value="pop-culture">Pop Culture & Trends</option>
+                                <option value="awards-events">Awards & Events</option>
+                            </optgroup>
+                            <optgroup label="⚽ SPORTS">
+                                <option value="national-sports">National Sports</option>
+                                <option value="international-sports">International Sports</option>
+                                <option value="basketball">Basketball</option>
+                                <option value="football-soccer">Football / Soccer</option>
+                                <option value="volleyball">Volleyball</option>
+                                <option value="baseball">Baseball</option>
+                                <option value="boxing-mma">Boxing / MMA</option>
+                                <option value="esports">eSports</option>
+                                <option value="olympics">Olympics</option>
+                                <option value="sports-personalities">Sports Personalities</option>
+                            </optgroup>
+                            <optgroup label="💡 LIFESTYLE">
+                                <option value="travel-tourism">Travel & Tourism</option>
+                                <option value="food-drinks">Food & Drinks</option>
+                                <option value="home-living">Home & Living</option>
+                                <option value="fashion-beauty">Fashion & Beauty</option>
+                                <option value="hobbies-leisure">Hobbies & Leisure</option>
+                                <option value="relationships-family">Relationships & Family</option>
+                                <option value="self-improvement">Self-Improvement</option>
+                                <option value="culture-society">Culture & Society</option>
+                                <option value="trends-pop">Trends & Pop Culture</option>
+                            </optgroup>
+                            <optgroup label="🚔 CRIME & PUBLIC SAFETY">
+                                <option value="police-reports">Police Reports</option>
+                                <option value="criminal-cases">Criminal Cases</option>
+                                <option value="cybercrime">Cybercrime</option>
+                                <option value="missing-persons">Missing Persons</option>
+                                <option value="corruption-bribery">Corruption / Bribery</option>
+                                <option value="court-trials">Court Trials</option>
+                                <option value="human-trafficking">Human Trafficking</option>
+                                <option value="drug-operations">Drug Operations</option>
+                                <option value="terrorism">Terrorism</option>
+                            </optgroup>
+                            <optgroup label="💻 TECH INDUSTRY">
+                                <option value="app-launches">App Launches</option>
+                                <option value="software-updates">Software Updates</option>
+                                <option value="tech-startups">Tech Startups</option>
+                                <option value="reviews-comparisons">Reviews & Comparisons</option>
+                                <option value="hardware-components">Hardware / Components</option>
+                                <option value="cybersecurity-breaches">Cybersecurity Breaches</option>
+                                <option value="web3-blockchain">Web3 / Blockchain</option>
+                                <option value="cryptocurrency">Cryptocurrency</option>
+                                <option value="vr-metaverse">Virtual Reality / Metaverse</option>
+                                <option value="telecommunications">Telecommunications</option>
+                            </optgroup>
+                            <optgroup label="💬 OPINION & EDITORIAL">
+                                <option value="editorials">Editorials</option>
+                                <option value="opinion-columns">Opinion Columns</option>
+                                <option value="commentaries">Commentaries</option>
+                                <option value="reader-letters">Reader Letters</option>
+                                <option value="fact-checks">Fact Checks</option>
+                            </optgroup>
+                            <optgroup label="🕊️ HUMAN INTEREST / COMMUNITY">
+                                <option value="inspirational-stories">Inspirational Stories</option>
+                                <option value="local-heroes">Local Heroes</option>
+                                <option value="acts-kindness">Acts of Kindness</option>
+                                <option value="charity-volunteer">Charity / Volunteer Work</option>
+                                <option value="life-stories">Life Stories</option>
+                                <option value="community-projects">Community Projects</option>
+                            </optgroup>
+
+                        </select>
+                    </div>
+
+
+
+                    <div id="abstractSection">
+                        <label for="abstract" class="block text-sm font-medium text-gray-700 mb-2">Abstract/Summary</label>
+                        <textarea id="abstract" name="abstract" rows="4" required 
+                                  placeholder="Provide a brief summary of your article (200-300 words)"
+                                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors resize-vertical"></textarea>
+                    </div>
+
+                    <!-- Media Upload Section -->
+                    <div id="mediaSection" class="hidden">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div id="photoUpload" class="hidden">
+                                <label for="photoFiles" class="block text-sm font-medium text-gray-700 mb-2">Upload Photos</label>
+                                <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-indigo-400 transition-colors">
+                                    <input type="file" id="photoFiles" name="photoFiles" multiple accept="image/*" class="hidden" onchange="handleFileUpload(this, 'photo')">
+                                    <div class="cursor-pointer" onclick="document.getElementById('photoFiles').click()">
+                                        <div class="text-4xl mb-2">📸</div>
+                                        <p class="text-gray-600">Click to upload photos</p>
+                                        <p class="text-sm text-gray-500 mt-1">JPG, PNG, GIF up to 10MB each</p>
+                                    </div>
+                                </div>
+                                <div id="photoPreview" class="mt-4 grid grid-cols-2 gap-4"></div>
+                            </div>
+                            
+                            <div id="videoUpload" class="hidden">
+                                <label for="videoFiles" class="block text-sm font-medium text-gray-700 mb-2">Upload Videos</label>
+                                <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-indigo-400 transition-colors">
+                                    <input type="file" id="videoFiles" name="videoFiles" multiple accept="video/*" class="hidden" onchange="handleFileUpload(this, 'video')">
+                                    <div class="cursor-pointer" onclick="document.getElementById('videoFiles').click()">
+                                        <div class="text-4xl mb-2">🎥</div>
+                                        <p class="text-gray-600">Click to upload videos</p>
+                                        <p class="text-sm text-gray-500 mt-1">MP4, MOV, AVI up to 100MB each</p>
+                                    </div>
+                                </div>
+                                <div id="videoPreview" class="mt-4 space-y-4"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6">
+                            <label for="mediaCaption" class="block text-sm font-medium text-gray-700 mb-2">Caption/Description</label>
+                            <textarea id="mediaCaption" name="mediaCaption" rows="3" 
+                                      placeholder="Add a caption or description for your media files"
+                                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors resize-vertical"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Article Content Section -->
+                    <div id="articleSection">
+                        <div class="flex justify-between items-center mb-2">
+                            <label for="articleContent" class="block text-sm font-medium text-gray-700">Article Content</label>
+                            <span id="wordCount" class="text-sm word-count">0 words</span>
+                        </div>
+                        <textarea id="articleContent" name="articleContent" rows="20" 
+                                  placeholder="Write your full article here (5,000-6,000 words recommended)"
+                                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors resize-vertical font-mono text-sm leading-relaxed"></textarea>
+                        <div class="mt-2 text-sm text-gray-500">
+                            <span class="inline-block mr-4">📝 Target: 5,000-6,000 words</span>
+                            <span class="inline-block">💡 Tip: Use clear headings and paragraphs for better readability</span>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+                        <button type="button" onclick="saveDraft()" 
+                                class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                            Save as Draft
+                        </button>
+                        <button type="submit" 
+                                class="px-8 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium">
+                            Submit Article
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Storage Access Interface -->
+            <div id="submissionsList" class="hidden">
+                <div class="bg-white rounded-xl shadow-lg p-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-semibold text-gray-900">SNIRAL Storage</h2>
+                        <div class="flex space-x-2">
+                            <select id="typeFilter" onchange="filterSubmissions()" 
+                                    class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                                <option value="all">All Types</option>
+                                <option value="articles">📰 Articles</option>
+                                <option value="photos">📸 Photos</option>
+                                <option value="videos">🎥 Videos</option>
+                            </select>
+                            <select id="statusFilter" onchange="filterSubmissions()" 
+                                    class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                                <option value="all">All Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="under-review">Under Review</option>
+                                <option value="approved">Approved</option>
+                                <option value="draft">Draft</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Category Tabs -->
+                    <div class="flex space-x-1 mb-6 bg-gray-100 p-1 rounded-lg">
+                        <button onclick="showCategory('all')" id="tab-all" class="flex-1 px-4 py-2 text-sm font-medium rounded-md bg-white text-indigo-600 shadow-sm">
+                            All Content
+                        </button>
+                        <button onclick="showCategory('articles')" id="tab-articles" class="flex-1 px-4 py-2 text-sm font-medium rounded-md text-gray-600 hover:text-gray-900">
+                            📰 Articles
+                        </button>
+                        <button onclick="showCategory('photos')" id="tab-photos" class="flex-1 px-4 py-2 text-sm font-medium rounded-md text-gray-600 hover:text-gray-900">
+                            📸 Photos
+                        </button>
+                        <button onclick="showCategory('videos')" id="tab-videos" class="flex-1 px-4 py-2 text-sm font-medium rounded-md text-gray-600 hover:text-gray-900">
+                            🎥 Videos
+                        </button>
+                    </div>
+                    
+                    <div id="submissionsContainer" class="space-y-4">
+                        <!-- Submissions will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Storage Access Modal -->
+            <div id="storageModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                <div class="bg-white rounded-xl max-w-md w-full p-8">
+                    <div class="text-center mb-6">
+                        <div class="text-4xl mb-4">🔒</div>
+                        <h2 class="text-2xl font-bold text-gray-900 mb-2">Storage Access</h2>
+                        <p class="text-gray-600">Enter the access code to view stored submissions</p>
+                    </div>
+                    
+                    <form id="storageForm" class="space-y-4">
+                        <div>
+                            <label for="accessCode" class="block text-sm font-medium text-gray-700 mb-2">Access Code</label>
+                            <input type="password" id="accessCode" name="accessCode" required 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors text-center font-mono tracking-wider"
+                                   placeholder="Enter access code">
+                        </div>
+                        
+                        <div id="accessError" class="hidden text-red-600 text-sm text-center">
+                            ❌ Invalid access code. Please try again.
+                        </div>
+                        
+                        <div class="flex space-x-3">
+                            <button type="button" onclick="closeStorageModal()" 
+                                    class="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                                Cancel
+                            </button>
+                            <button type="submit" 
+                                    class="flex-1 px-4 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+                                Access Storage
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Success Message -->
+            <div id="successMessage" class="hidden fixed top-4 right-4 bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg z-50 fade-in">
+                <div class="flex items-center">
+                    <span class="mr-2">✅</span>
+                    <span id="successText">Article submitted successfully!</span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let submissions = JSON.parse(localStorage.getItem('articleSubmissions')) || [];
+        let drafts = JSON.parse(localStorage.getItem('articleDrafts')) || [];
+        let uploadedFiles = [];
+        let storageAccess = false;
+        const STORAGE_CODE = '5AKRK12SNIRALKYMARCH292';
+
+        // Category change handler
+        document.getElementById('category').addEventListener('change', function() {
+            const category = this.value;
+            const articleSection = document.getElementById('articleSection');
+            const mediaSection = document.getElementById('mediaSection');
+            const abstractSection = document.getElementById('abstractSection');
+            const photoUpload = document.getElementById('photoUpload');
+            const videoUpload = document.getElementById('videoUpload');
+            const articleContent = document.getElementById('articleContent');
+            const abstract = document.getElementById('abstract');
+            
+            if (category === 'photos') {
+                articleSection.classList.add('hidden');
+                abstractSection.classList.add('hidden');
+                mediaSection.classList.remove('hidden');
+                photoUpload.classList.remove('hidden');
+                videoUpload.classList.add('hidden');
+                articleContent.removeAttribute('required');
+                abstract.removeAttribute('required');
+            } else if (category === 'videos') {
+                articleSection.classList.add('hidden');
+                abstractSection.classList.add('hidden');
+                mediaSection.classList.remove('hidden');
+                photoUpload.classList.add('hidden');
+                videoUpload.classList.remove('hidden');
+                articleContent.removeAttribute('required');
+                abstract.removeAttribute('required');
+            } else {
+                articleSection.classList.remove('hidden');
+                abstractSection.classList.remove('hidden');
+                mediaSection.classList.add('hidden');
+                photoUpload.classList.add('hidden');
+                videoUpload.classList.add('hidden');
+                articleContent.setAttribute('required', 'required');
+                abstract.setAttribute('required', 'required');
+            }
+        });
+
+        // File upload handler
+        function handleFileUpload(input, type) {
+            const files = Array.from(input.files);
+            const previewContainer = document.getElementById(type + 'Preview');
+            
+            files.forEach(file => {
+                const fileData = {
+                    name: file.name,
+                    size: file.size,
+                    type: file.type,
+                    lastModified: file.lastModified
+                };
+                
+                uploadedFiles.push(fileData);
+                
+                const fileElement = document.createElement('div');
+                fileElement.className = 'bg-gray-50 p-3 rounded-lg border';
+                
+                if (type === 'photo') {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        fileElement.innerHTML = `
+                            <img src="${e.target.result}" alt="${file.name}" class="w-full h-32 object-cover rounded mb-2">
+                            <p class="text-sm font-medium truncate">${file.name}</p>
+                            <p class="text-xs text-gray-500">${(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                        `;
+                    };
+                    reader.readAsDataURL(file);
+                } else if (type === 'video') {
+                    fileElement.innerHTML = `
+                        <div class="flex items-center space-x-3">
+                            <div class="text-2xl">🎥</div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium truncate">${file.name}</p>
+                                <p class="text-xs text-gray-500">${(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                previewContainer.appendChild(fileElement);
+            });
+        }
+
+        // Word count functionality
+        document.getElementById('articleContent').addEventListener('input', function() {
+            const content = this.value;
+            const wordCount = content.trim() === '' ? 0 : content.trim().split(/\s+/).length;
+            const wordCountElement = document.getElementById('wordCount');
+            
+            wordCountElement.textContent = `${wordCount.toLocaleString()} words`;
+            
+            // Color coding based on word count
+            wordCountElement.className = 'text-sm word-count';
+            if (wordCount < 4000) {
+                wordCountElement.classList.add('error');
+            } else if (wordCount < 5000) {
+                wordCountElement.classList.add('warning');
+            } else if (wordCount <= 6500) {
+                wordCountElement.classList.add('success');
+            } else {
+                wordCountElement.classList.add('warning');
+            }
+        });
+
+        // Form submission
+        document.getElementById('articleForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const category = formData.get('category');
+            const content = formData.get('articleContent') || '';
+            const mediaCaption = formData.get('mediaCaption') || '';
+            
+            const submission = {
+                id: Date.now(),
+                authorName: formData.get('authorName'),
+                title: formData.get('articleTitle'),
+                category: category,
+                tags: [],
+                abstract: formData.get('abstract') || '',
+                content: content,
+                mediaCaption: mediaCaption,
+                uploadedFiles: [...uploadedFiles],
+                wordCount: content.trim() === '' ? 0 : content.trim().split(/\s+/).length,
+                status: 'pending',
+                submittedAt: new Date().toISOString(),
+                isDraft: false,
+                isMedia: category === 'photos' || category === 'videos'
+            };
+
+            submissions.push(submission);
+            localStorage.setItem('articleSubmissions', JSON.stringify(submissions));
+            
+            const successMessage = submission.isMedia ? 
+                `${category === 'photos' ? 'Photos' : 'Videos'} submitted successfully!` : 
+                'Article submitted successfully!';
+            
+            showSuccess(successMessage);
+            this.reset();
+            document.getElementById('wordCount').textContent = '0 words';
+            document.getElementById('wordCount').className = 'text-sm word-count';
+            
+            // Reset file uploads
+            uploadedFiles = [];
+            document.getElementById('photoPreview').innerHTML = '';
+            document.getElementById('videoPreview').innerHTML = '';
+            
+            // Reset form sections
+            document.getElementById('articleSection').classList.remove('hidden');
+            document.getElementById('abstractSection').classList.remove('hidden');
+            document.getElementById('mediaSection').classList.add('hidden');
+            document.getElementById('articleContent').setAttribute('required', 'required');
+            document.getElementById('abstract').setAttribute('required', 'required');
+            
+            updateSubmissionCount();
+        });
+
+        function saveDraft() {
+            const form = document.getElementById('articleForm');
+            const formData = new FormData(form);
+            const category = formData.get('category');
+            const content = formData.get('articleContent') || '';
+            const mediaCaption = formData.get('mediaCaption') || '';
+            
+            const draft = {
+                id: Date.now(),
+                authorName: formData.get('authorName'),
+                title: formData.get('articleTitle') || 'Untitled Draft',
+                category: category,
+                tags: [],
+                abstract: formData.get('abstract') || '',
+                content: content,
+                mediaCaption: mediaCaption,
+                uploadedFiles: [...uploadedFiles],
+                wordCount: content.trim() === '' ? 0 : content.trim().split(/\s+/).length,
+                status: 'draft',
+                savedAt: new Date().toISOString(),
+                isDraft: true,
+                isMedia: category === 'photos' || category === 'videos'
+            };
+
+            drafts.push(draft);
+            localStorage.setItem('articleDrafts', JSON.stringify(drafts));
+            
+            showSuccess('Draft saved successfully!');
+            updateSubmissionCount();
+        }
+
+        function showSubmissions() {
+            if (!storageAccess) {
+                showStorageAccess();
+                return;
+            }
+            document.getElementById('submissionForm').classList.add('hidden');
+            document.getElementById('submissionsList').classList.remove('hidden');
+            renderSubmissions();
+        }
+
+        function showStorageAccess() {
+            document.getElementById('storageModal').classList.remove('hidden');
+            document.getElementById('accessCode').focus();
+        }
+
+        function closeStorageModal() {
+            document.getElementById('storageModal').classList.add('hidden');
+            document.getElementById('accessCode').value = '';
+            document.getElementById('accessError').classList.add('hidden');
+        }
+
+        // Storage form submission
+        document.getElementById('storageForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const enteredCode = document.getElementById('accessCode').value;
+            
+            if (enteredCode === STORAGE_CODE) {
+                storageAccess = true;
+                closeStorageModal();
+                showSubmissions();
+                showSuccess('Storage access granted! 🔓');
+            } else {
+                document.getElementById('accessError').classList.remove('hidden');
+                document.getElementById('accessCode').value = '';
+                document.getElementById('accessCode').focus();
+            }
+        });
+
+        function showSubmissionForm(type = 'article') {
+            document.getElementById('submissionsList').classList.add('hidden');
+            document.getElementById('submissionForm').classList.remove('hidden');
+            
+            const formTitle = document.getElementById('formTitle');
+            const categorySelect = document.getElementById('category');
+            const articleSection = document.getElementById('articleSection');
+            const abstractSection = document.getElementById('abstractSection');
+            const mediaSection = document.getElementById('mediaSection');
+            const photoUpload = document.getElementById('photoUpload');
+            const videoUpload = document.getElementById('videoUpload');
+            const articleContent = document.getElementById('articleContent');
+            const abstract = document.getElementById('abstract');
+            
+            // Reset form
+            document.getElementById('articleForm').reset();
+            uploadedFiles = [];
+            document.getElementById('photoPreview').innerHTML = '';
+            document.getElementById('videoPreview').innerHTML = '';
+            
+            if (type === 'photo') {
+                formTitle.textContent = '📸 Submit New Photo';
+                categorySelect.value = 'photos';
+                articleSection.classList.add('hidden');
+                abstractSection.classList.add('hidden');
+                mediaSection.classList.remove('hidden');
+                photoUpload.classList.remove('hidden');
+                videoUpload.classList.add('hidden');
+                articleContent.removeAttribute('required');
+                abstract.removeAttribute('required');
+            } else if (type === 'video') {
+                formTitle.textContent = '🎥 Submit New Video';
+                categorySelect.value = 'videos';
+                articleSection.classList.add('hidden');
+                abstractSection.classList.add('hidden');
+                mediaSection.classList.remove('hidden');
+                photoUpload.classList.add('hidden');
+                videoUpload.classList.remove('hidden');
+                articleContent.removeAttribute('required');
+                abstract.removeAttribute('required');
+            } else {
+                formTitle.textContent = '📰 Submit New Article';
+                categorySelect.value = '';
+                articleSection.classList.remove('hidden');
+                abstractSection.classList.remove('hidden');
+                mediaSection.classList.add('hidden');
+                photoUpload.classList.add('hidden');
+                videoUpload.classList.add('hidden');
+                articleContent.setAttribute('required', 'required');
+                abstract.setAttribute('required', 'required');
+            }
+        }
+
+        let currentCategoryFilter = 'all';
+
+        function showCategory(category) {
+            currentCategoryFilter = category;
+            
+            // Update tab appearance
+            document.querySelectorAll('[id^="tab-"]').forEach(tab => {
+                tab.className = 'flex-1 px-4 py-2 text-sm font-medium rounded-md text-gray-600 hover:text-gray-900';
+            });
+            document.getElementById(`tab-${category}`).className = 'flex-1 px-4 py-2 text-sm font-medium rounded-md bg-white text-indigo-600 shadow-sm';
+            
+            renderSubmissions();
+        }
+
+        function renderSubmissions() {
+            const container = document.getElementById('submissionsContainer');
+            let allItems = [...submissions, ...drafts].sort((a, b) => 
+                new Date(b.submittedAt || b.savedAt) - new Date(a.submittedAt || a.savedAt)
+            );
+            
+            // Filter by category
+            if (currentCategoryFilter !== 'all') {
+                if (currentCategoryFilter === 'articles') {
+                    allItems = allItems.filter(item => !item.isMedia);
+                } else if (currentCategoryFilter === 'photos') {
+                    allItems = allItems.filter(item => item.category === 'photos');
+                } else if (currentCategoryFilter === 'videos') {
+                    allItems = allItems.filter(item => item.category === 'videos');
+                }
+            }
+            
+            // Filter by status
+            const statusFilter = document.getElementById('statusFilter')?.value;
+            if (statusFilter && statusFilter !== 'all') {
+                allItems = allItems.filter(item => item.status === statusFilter);
+            }
+            
+            if (allItems.length === 0) {
+                const categoryName = currentCategoryFilter === 'all' ? 'content' : currentCategoryFilter;
+                container.innerHTML = `
+                    <div class="text-center py-12 text-gray-500">
+                        <div class="text-6xl mb-4">${currentCategoryFilter === 'articles' ? '📰' : currentCategoryFilter === 'photos' ? '📸' : currentCategoryFilter === 'videos' ? '🎥' : '📝'}</div>
+                        <h3 class="text-lg font-medium mb-2">No ${categoryName} found</h3>
+                        <p>Submit your first ${categoryName} to get started!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = allItems.map(item => `
+                <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-2">
+                                ${item.isMedia ? (item.category === 'photos' ? '📸' : '🎥') : '📰'}
+                                <h3 class="text-lg font-semibold text-gray-900">${item.title}</h3>
+                            </div>
+                            <div class="flex items-center space-x-4 text-sm text-gray-600 mb-2">
+                                <span>👤 ${item.authorName}</span>
+                                <span>📂 ${getCategoryDisplay(item.category)}</span>
+                                ${item.isMedia ? 
+                                    `<span>📁 ${item.uploadedFiles ? item.uploadedFiles.length : 0} files</span>` :
+                                    `<span>📊 ${item.wordCount.toLocaleString()} words</span>`
+                                }
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <span class="px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(item.status)}">
+                                ${getStatusText(item.status)}
+                            </span>
+                            <button onclick="viewSubmission(${item.id})" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 text-sm leading-relaxed">
+                        ${item.isMedia ? 
+                            (item.mediaCaption ? item.mediaCaption.substring(0, 200) + '...' : 'Media submission') :
+                            (item.abstract ? item.abstract.substring(0, 200) + '...' : 'No abstract provided')
+                        }
+                    </p>
+                    <div class="mt-4 text-xs text-gray-500">
+                        ${item.isDraft ? 'Saved' : 'Submitted'} on ${new Date(item.submittedAt || item.savedAt).toLocaleDateString('en-US', { 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        })}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getStatusColor(status) {
+            const colors = {
+                'pending': 'bg-yellow-100 text-yellow-800',
+                'under-review': 'bg-blue-100 text-blue-800',
+                'approved': 'bg-green-100 text-green-800',
+                'draft': 'bg-gray-100 text-gray-800'
+            };
+            return colors[status] || 'bg-gray-100 text-gray-800';
+        }
+
+        function getStatusText(status) {
+            const texts = {
+                'pending': 'Pending Review',
+                'under-review': 'Under Review',
+                'approved': 'Approved',
+                'draft': 'Draft'
+            };
+            return texts[status] || 'Unknown';
+        }
+
+        function getCategoryDisplay(category) {
+            const categoryMap = {
+                'government-politics': 'Government & Politics',
+                'elections': 'Elections',
+                'economy-finance': 'Economy & Finance',
+                'science-research': 'Science & Research',
+                'health-science': 'Health Science',
+                'photos': 'Photos',
+                'videos': 'Videos'
+            };
+            return categoryMap[category] || category || 'Uncategorized';
+        }
+
+        function viewSubmission(id) {
+            const item = [...submissions, ...drafts].find(s => s.id === id);
+            if (!item) return;
+
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+            modal.innerHTML = `
+                <div class="bg-white rounded-xl max-w-4xl w-full max-h-full overflow-y-auto">
+                    <div class="p-6 border-b border-gray-200">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-900 mb-2">${item.title}</h2>
+                                <div class="flex items-center space-x-4 text-sm text-gray-600">
+                                    <span>👤 ${item.authorName}</span>
+                                    <span>📂 ${item.category || 'Uncategorized'}</span>
+                                    <span>📊 ${item.wordCount.toLocaleString()} words</span>
+                                </div>
+                            </div>
+                            <button onclick="this.closest('.fixed').remove()" class="text-gray-400 hover:text-gray-600 text-2xl">×</button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        ${item.abstract ? `
+                            <div class="mb-6">
+                                <h3 class="font-semibold text-gray-900 mb-2">Abstract</h3>
+                                <p class="text-gray-700 leading-relaxed">${item.abstract}</p>
+                            </div>
+                        ` : ''}
+                        
+                        ${item.isMedia && item.uploadedFiles && item.uploadedFiles.length > 0 ? `
+                            <div class="mb-6">
+                                <h3 class="font-semibold text-gray-900 mb-2">Uploaded Files</h3>
+                                <div class="grid grid-cols-2 gap-4">
+                                    ${item.uploadedFiles.map(file => `
+                                        <div class="bg-gray-50 p-3 rounded-lg border">
+                                            <div class="flex items-center space-x-3">
+                                                <div class="text-2xl">${item.category === 'photos' ? '📸' : '🎥'}</div>
+                                                <div class="flex-1">
+                                                    <p class="text-sm font-medium truncate">${file.name}</p>
+                                                    <p class="text-xs text-gray-500">${(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+                        
+                        ${item.mediaCaption ? `
+                            <div class="mb-6">
+                                <h3 class="font-semibold text-gray-900 mb-2">Caption/Description</h3>
+                                <p class="text-gray-700 leading-relaxed">${item.mediaCaption}</p>
+                            </div>
+                        ` : ''}
+                        
+                        ${item.content && !item.isMedia ? `
+                            <div>
+                                <h3 class="font-semibold text-gray-900 mb-2">Content</h3>
+                                <div class="bg-gray-50 p-4 rounded-lg max-h-96 overflow-y-auto">
+                                    <pre class="whitespace-pre-wrap text-sm text-gray-800 font-sans leading-relaxed">${item.content}</pre>
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function filterSubmissions() {
+            renderSubmissions();
+        }
+
+        function showSuccess(message) {
+            const successElement = document.getElementById('successMessage');
+            document.getElementById('successText').textContent = message;
+            successElement.classList.remove('hidden');
+            
+            setTimeout(() => {
+                successElement.classList.add('hidden');
+            }, 3000);
+        }
+
+        function updateSubmissionCount() {
+            const totalCount = submissions.length + drafts.length;
+            document.getElementById('submissionCount').textContent = totalCount;
+        }
+
+        // Initialize
+        updateSubmissionCount();
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99307d7a355081bc',t:'MTc2MTIxNDcwNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
+
